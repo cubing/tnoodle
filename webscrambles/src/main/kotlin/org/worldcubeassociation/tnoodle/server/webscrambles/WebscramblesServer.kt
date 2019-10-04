@@ -1,6 +1,7 @@
 package org.worldcubeassociation.tnoodle.server.webscrambles
 
 import com.xenomachina.argparser.ArgParser
+import cs.threephase.Tools
 import io.ktor.application.Application
 import io.ktor.routing.routing
 import io.ktor.server.engine.commandLineEnvironment
@@ -17,6 +18,8 @@ import org.worldcubeassociation.tnoodle.server.webscrambles.routing.job.JobSched
 import org.worldcubeassociation.tnoodle.server.webscrambles.server.LocalServerEnvironmentConfig
 import org.worldcubeassociation.tnoodle.server.webscrambles.server.MainLauncher
 import org.worldcubeassociation.tnoodle.server.webscrambles.server.OfflineJarUtils
+import java.io.DataInputStream
+import java.io.DataOutputStream
 
 class WebscramblesServer(val environmentConfig: ServerEnvironmentConfig) : ApplicationHandler {
     private val baseServer = TNoodleServer(environmentConfig)
@@ -26,6 +29,16 @@ class WebscramblesServer(val environmentConfig: ServerEnvironmentConfig) : Appli
         val scrambleViewHandler = ScrambleViewHandler(environmentConfig)
 
         val wcifHandler = WcifHandler(environmentConfig)
+
+        if (environmentConfig.pruningTableExists(THREEPHASE_PRUNING)) {
+            DataInputStream(environmentConfig.getPruningTableInput(THREEPHASE_PRUNING)).use {
+                Tools.initFrom(it)
+            }
+        } else {
+            DataOutputStream(environmentConfig.getPruningTableOutput(THREEPHASE_PRUNING)).use {
+                Tools.saveTo(it)
+            }
+        }
 
         app.routing {
             PuzzleListHandler.install(this)
@@ -43,6 +56,8 @@ class WebscramblesServer(val environmentConfig: ServerEnvironmentConfig) : Appli
 
     companion object {
         const val MIN_HEAP_SIZE_MEGS = 512
+
+        const val THREEPHASE_PRUNING = "444-threephase"
 
         val LOG = LoggerFactory.getLogger(WebscramblesServer::class.java)
 

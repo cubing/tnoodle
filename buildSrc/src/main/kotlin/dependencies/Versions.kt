@@ -7,6 +7,7 @@ object Versions {
     val KTOR = "1.3.0"
     val PROGUARD = "6.2.2"
     val KOTLESS = "0.1.3"
+    val TNOODLE_LIB = "0.17.0"
 
     val MARKDOWNJ_CORE = "0.4"
     val ZIP4J = "2.3.1"
@@ -31,7 +32,8 @@ object Versions {
     val WCA_I18N = "0.4.3"
     val GOOGLE_APPENGINE_GRADLE = "2.2.0"
     val GOOGLE_CLOUD_STORAGE = "1.103.0"
-    val TNOODLE_SCRAMBLES = "0.17.0"
+    val TNOODLE_SCRAMBLES = TNOODLE_LIB
+    val TNOODLE_SCRAMBLER_THREEPHASE = TNOODLE_LIB
     val APACHE_COMMONS_LANG3 = "3.9"
     val KOTLESS_KTOR = KOTLESS
 
