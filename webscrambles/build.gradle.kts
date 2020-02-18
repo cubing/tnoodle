@@ -117,10 +117,6 @@ tasks.getByName("shadowJar") {
         val originFile = file("$buildDir/libs/$targetProject-$version-all.jar")
         val targetLn = rootProject.file("TNoodle-Docker-latest.jar")
 
-        if (!targetLn.exists() || targetLn.delete()) {
-            symlink(targetLn, originFile)
-        } else {
-            logger.warn("Unable to (re-)create symlink for Docker container! Building a Docker image might result in out-of-date deployments")
-        }
+        symlink(targetLn, originFile)
     }
 }
