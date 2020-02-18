@@ -30,15 +30,7 @@ class WebscramblesServer(val environmentConfig: ServerEnvironmentConfig) : Appli
 
         val wcifHandler = WcifHandler(environmentConfig)
 
-        if (environmentConfig.pruningTableExists(THREEPHASE_PRUNING)) {
-            DataInputStream(environmentConfig.getPruningTableInput(THREEPHASE_PRUNING)).use {
-                Tools.initFrom(it)
-            }
-        } else {
-            DataOutputStream(environmentConfig.getPruningTableOutput(THREEPHASE_PRUNING)).use {
-                Tools.saveTo(it)
-            }
-        }
+        initPruning()
 
         app.routing {
             PuzzleListHandler.install(this)
@@ -52,6 +44,20 @@ class WebscramblesServer(val environmentConfig: ServerEnvironmentConfig) : Appli
         }
 
         baseServer.spinUp(app)
+    }
+
+    private fun initPruning() {
+        if (environmentConfig.usePruning) {
+            if (environmentConfig.pruningTableExists(THREEPHASE_PRUNING)) {
+                DataInputStream(environmentConfig.getPruningTableInput(THREEPHASE_PRUNING)).use {
+                    Tools.initFrom(it)
+                }
+            } else {
+                DataOutputStream(environmentConfig.getPruningTableOutput(THREEPHASE_PRUNING)).use {
+                    Tools.saveTo(it)
+                }
+            }
+        }
     }
 
     companion object {

@@ -33,6 +33,8 @@ object GoogleServerEnvironmentConfig : ServerEnvironmentConfig {
         get() = CONFIG_DATA.getOrNull(1)
             ?: DEVEL_VERSION
 
+    override val usePruning = true
+
     override fun pruningTableExists(tableName: String): Boolean {
         val blobId = remotePruningBlob(tableName)
         return GCS_SERVICE.get(blobId)?.exists() ?: false

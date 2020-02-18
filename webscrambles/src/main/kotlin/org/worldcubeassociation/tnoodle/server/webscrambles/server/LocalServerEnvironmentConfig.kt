@@ -17,6 +17,9 @@ object LocalServerEnvironmentConfig : ServerEnvironmentConfig {
         get() = LocalServerEnvironmentConfig::class.java.getPackage()?.implementationVersion
             ?: DEVEL_VERSION
 
+    override val usePruning: Boolean
+        get() = System.getenv("CI") != null
+
     private fun getPruningTableCache(assertExists: Boolean = true): File {
         val baseDir = File(programDirectory, PRUNING_FOLDER)
 

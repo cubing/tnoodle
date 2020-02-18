@@ -10,6 +10,8 @@ interface ServerEnvironmentConfig {
     val projectTitle
         get() = "$projectName-$version"
 
+    val usePruning: Boolean
+
     fun pruningTableExists(tableName: String): Boolean
 
     fun getPruningTableInput(tableName: String): InputStream
