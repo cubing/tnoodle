@@ -14,6 +14,8 @@ import org.worldcubeassociation.tnoodle.server.util.ServerEnvironmentConfig
 
 class TNoodleServer(val environmentConfig: ServerEnvironmentConfig) : ApplicationHandler {
     override fun spinUp(app: io.ktor.application.Application) {
+        environmentConfig.createLocalPruningCache()
+
         val versionHandler = VersionHandler(environmentConfig.projectTitle)
 
         app.routing {

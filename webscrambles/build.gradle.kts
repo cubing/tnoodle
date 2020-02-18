@@ -13,6 +13,7 @@ import dependencies.Libraries.SYSTEM_TRAY
 import dependencies.Libraries.KOTLIN_SERIALIZATION_JVM
 import dependencies.Libraries.SNAKEYAML
 import dependencies.Libraries.TNOODLE_SCRAMBLES
+import dependencies.Libraries.TNOODLE_SCRAMBLER_THREEPHASE
 import dependencies.Libraries.ZIP4J
 
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -52,6 +53,7 @@ dependencies {
     implementation(KOTLIN_ARGPARSER)
     implementation(SYSTEM_TRAY)
     implementation(TNOODLE_SCRAMBLES)
+    implementation(TNOODLE_SCRAMBLER_THREEPHASE)
     implementation(KOTLIN_SERIALIZATION_JVM)
     implementation(APACHE_COMMONS_LANG3)
 
@@ -115,10 +117,6 @@ tasks.getByName("shadowJar") {
         val originFile = file("$buildDir/libs/$targetProject-$version-all.jar")
         val targetLn = rootProject.file("TNoodle-Docker-latest.jar")
 
-        if (!targetLn.exists() || targetLn.delete()) {
-            symlink(targetLn, originFile)
-        } else {
-            logger.warn("Unable to (re-)create symlink for Docker container! Building a Docker image might result in out-of-date deployments")
-        }
+        symlink(targetLn, originFile)
     }
 }
