@@ -7,6 +7,7 @@ import WcaFormat from "../model/WcaFormat";
 import Wcif from "../model/Wcif";
 import { ScrambleClient } from "./tnoodle.socket";
 import WebsocketBlobResult from "../model/WebsocketBlobResult";
+import FrontendStatus from "../model/FrontendStatus";
 
 let backendUrl = new URL("http://localhost:2014");
 export const tNoodleBackend = backendUrl.toString().replace(/\/$/g, "");
@@ -63,6 +64,7 @@ class TnoodleApi {
         wcif: Wcif,
         mbld: string,
         password: string,
+        status: FrontendStatus,
         translations?: Translation[]
     ) => {
         let payload = {
@@ -70,6 +72,7 @@ class TnoodleApi {
             multiCubes: { requestedScrambles: mbld },
             fmcLanguages: fmcTranslationsHelper(translations),
             zipPassword: !password ? null : password,
+            frontendStatus: status,
         };
 
         return scrambleClient.loadScrambles(zipEndpoint, payload, wcif.id);

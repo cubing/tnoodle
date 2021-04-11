@@ -34,8 +34,11 @@ const Main = () => {
     const generatingScrambles = useSelector(
         (state: RootState) => state.scramblingSlice.generatingScrambles
     );
-    const officialZipStatus = useSelector(
-        (state: RootState) => state.scramblingSlice.officialZipStatus
+    const isValidSignedBuild = useSelector(
+        (state: RootState) => state.scramblingSlice.isValidSignedBuild
+    );
+    const isAllowedVersion = useSelector(
+        (state: RootState) => state.scramblingSlice.isAllowedVersion
     );
     const fileZip = useSelector(
         (state: RootState) => state.scramblingSlice.fileZip
@@ -73,8 +76,22 @@ const Main = () => {
             onScrambleProgress
         );
 
+        let frontendStatus = {
+            isStaging: isUsingStaging(),
+            isManual: competitionId == null,
+            isSignedBuild: isValidSignedBuild,
+            isAllowedVersion: isAllowedVersion,
+        };
+
         tnoodleApi
-            .fetchZip(scrambleClient, wcif, mbld, password, translations)
+            .fetchZip(
+                scrambleClient,
+                wcif,
+                mbld,
+                password,
+                frontendStatus,
+                translations
+            )
             .then((plainZip: WebsocketBlobResult) =>
                 dispatch(setFileZip(plainZip))
             )
@@ -90,6 +107,8 @@ const Main = () => {
         // We use the unofficialZip to stamp .zip in order to prevent delegates / organizers mistakes.
         // If TNoodle version is not official (as per VersionInfo) or if we generate scrambles using
         // a competition from staging, add a [Unofficial]
+
+        let officialZipStatus = isValidSignedBuild && isAllowedVersion;
 
         let isUnofficialZip =
             !officialZipStatus || (competitionId != null && isUsingStaging());
