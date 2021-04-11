@@ -199,6 +199,13 @@ export const plainZip = {
     payload: "UEsDBBQACAgIAK...",
 };
 
+export const defaultStatus = {
+    isStaging: false,
+    isManual: true,
+    isSignedBuild: true,
+    isAllowedVersion: true,
+};
+
 export const bestMbldAttempt = {
     solved: 60,
     attempted: 60,
