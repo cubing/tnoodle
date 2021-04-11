@@ -16,6 +16,7 @@ import EventPickerTable from "./EventPickerTable";
 import Interceptor from "./Interceptor";
 import "./Main.css";
 import VersionInfo from "./VersionInfo";
+import WebsocketBlobResult from "../model/WebsocketBlobResult";
 
 const Main = () => {
     const [competitionNameFileZip, setCompetitionNameFileZip] = useState("");
@@ -74,7 +75,7 @@ const Main = () => {
 
         tnoodleApi
             .fetchZip(scrambleClient, wcif, mbld, password, translations)
-            .then((plainZip: { contentType: string; payload: string }) =>
+            .then((plainZip: WebsocketBlobResult) =>
                 dispatch(setFileZip(plainZip))
             )
             .catch((err: any) => interceptorRef.current?.updateMessage(err))

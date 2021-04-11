@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import WebsocketBlobResult from "../../model/WebsocketBlobResult";
 
 interface ScramblingState {
-    fileZip?: { contentType: string; payload: string };
+    fileZip?: WebsocketBlobResult;
     generatingScrambles: boolean;
     officialZipStatus: boolean;
     password: string;
@@ -24,9 +25,7 @@ export const scramblingSlice = createSlice({
     reducers: {
         setFileZip: (
             state,
-            action: PayloadAction<
-                { contentType: string; payload: string } | undefined
-            >
+            action: PayloadAction<WebsocketBlobResult | undefined>
         ) => {
             state.fileZip = action.payload;
         },

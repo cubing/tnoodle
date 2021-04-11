@@ -1,9 +1,8 @@
 import { tNoodleBackend } from "./tnoodle.api";
+import WebsocketBlobResult from "../model/WebsocketBlobResult";
 
 export type ScrambleHandshakeFn = (payload: Record<string, number>) => void;
 export type ScrambleProgressFn = (payload: string) => void;
-
-export type ScramblingBlobResult = any & { contentType: string; payload: any };
 
 enum ScramblingState {
     Idle,
@@ -21,10 +20,10 @@ export class ScrambleClient {
 
     state: ScramblingState;
 
-    contentType: string | null;
+    contentType: string;
 
-    resultPayload: object | null;
-    errorPayload: object | null;
+    resultPayload: string;
+    errorPayload: any;
 
     constructor(
         onHandshake: ScrambleHandshakeFn,
@@ -35,9 +34,9 @@ export class ScrambleClient {
 
         this.state = ScramblingState.Idle;
 
-        this.contentType = null;
+        this.contentType = FALLBACK_APPLICATION_TYPE;
 
-        this.resultPayload = null;
+        this.resultPayload = "";
         this.errorPayload = null;
     }
 
@@ -45,7 +44,7 @@ export class ScrambleClient {
         endpoint: String,
         payload: object,
         targetMarker: String
-    ): Promise<ScramblingBlobResult> {
+    ): Promise<WebsocketBlobResult> {
         return new Promise((resolve, reject) => {
             let ws = new WebSocket(BASE_URL + endpoint);
 
@@ -61,8 +60,7 @@ export class ScrambleClient {
             ws.onclose = (cls) => {
                 if (this.state === ScramblingState.Done && cls.wasClean) {
                     let resultObject = {
-                        contentType:
-                            this.contentType ?? FALLBACK_APPLICATION_TYPE,
+                        contentType: this.contentType,
                         payload: this.resultPayload,
                     };
 

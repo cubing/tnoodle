@@ -6,6 +6,7 @@ import WcaEvent from "../model/WcaEvent";
 import WcaFormat from "../model/WcaFormat";
 import Wcif from "../model/Wcif";
 import { ScrambleClient } from "./tnoodle.socket";
+import WebsocketBlobResult from "../model/WebsocketBlobResult";
 
 let backendUrl = new URL("http://localhost:2014");
 export const tNoodleBackend = backendUrl.toString().replace(/\/$/g, "");
@@ -74,10 +75,7 @@ class TnoodleApi {
         return scrambleClient.loadScrambles(zipEndpoint, payload, wcif.id);
     };
 
-    convertToBlob = async (result: {
-        contentType: string;
-        payload: string;
-    }) => {
+    convertToBlob = async (result: WebsocketBlobResult) => {
         let { contentType, payload } = result;
         let res = await fetch(`data:${contentType};base64,${payload}`);
 
