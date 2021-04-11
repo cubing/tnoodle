@@ -28,9 +28,30 @@ class WatermarkPdfWrapper(
         val pr = PdfReader(original.render())
 
         for (pageN in 1..pr.numberOfPages) {
-            val page = getImportedPage(pr, pageN)
-
             document.newPage()
+
+            // Frontend watermark
+            if (watermark != null) {
+                val transparentState = PdfGState().apply {
+                    setFillOpacity(WATERMARK_OPACITY)
+                    setStrokeOpacity(WATERMARK_OPACITY)
+                }
+
+                cb.saveState()
+                cb.setGState(transparentState)
+
+                val diagRotation = atan(PAGE_SIZE.height / PAGE_SIZE.width) * (180f / PI)
+
+                ColumnText.showTextAligned(cb,
+                    Element.ALIGN_CENTER, Phrase(watermark, Font(FontUtil.NOTO_SANS_FONT, 72f, Font.BOLD)),
+                    (PAGE_SIZE.left + PAGE_SIZE.right) / 2, (PAGE_SIZE.top + PAGE_SIZE.bottom) / 2, diagRotation.toFloat())
+
+                cb.restoreState()
+            }
+
+            // add the imported page *after* potential watermarks
+            // so the watermark stays in the background
+            val page = getImportedPage(pr, pageN)
             cb.addTemplate(page, 0f, 0f)
 
             val rect = pr.getBoxSize(pageN, "art")
@@ -64,28 +85,11 @@ class WatermarkPdfWrapper(
             ColumnText.showTextAligned(cb,
                 Element.ALIGN_CENTER, Phrase(generatedBy),
                 (PAGE_SIZE.left + PAGE_SIZE.right) / 2, footerRect.top - footerRect.height / 4, 0f)
-
-            // Staging watermark
-            if (watermark != null) {
-                val transparentState = PdfGState().apply {
-                    setFillOpacity(0.2f)
-                }
-
-                cb.saveState()
-                cb.setGState(transparentState)
-
-                val diagRotation = atan(PAGE_SIZE.height / PAGE_SIZE.width) * (180f / PI)
-
-                ColumnText.showTextAligned(cb,
-                    Element.ALIGN_CENTER, Phrase(watermark, Font(FontUtil.NOTO_SANS_FONT, 100f, Font.BOLD)),
-                    (PAGE_SIZE.left + PAGE_SIZE.right) / 2, (PAGE_SIZE.top + PAGE_SIZE.bottom) / 2, diagRotation.toFloat())
-
-                cb.restoreState()
-            }
         }
     }
 
     companion object {
         const val HEADER_AND_FOOTER_HEIGHT_RATIO = 12
+        const val WATERMARK_OPACITY = 0.1f
     }
 }
