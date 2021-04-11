@@ -30,7 +30,8 @@
         "build": "react-scripts build",
         "test": "react-scripts test --watchAll --watchAll=false --coverage",
         "eject": "react-scripts eject",
-        "prettier": "prettier --check ."
+        "prettier": "prettier --check .",
+        "lint": "prettier --write ."
     },
     "eslintConfig": {
         "extends": [
