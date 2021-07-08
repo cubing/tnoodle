@@ -1,9 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import WebsocketBlobResult from "../../model/WebsocketBlobResult";
 
 interface ScramblingState {
-    fileZip?: { contentType: string; payload: string };
+    fileZip?: WebsocketBlobResult;
     generatingScrambles: boolean;
-    officialZipStatus: boolean;
+    isValidSignedBuild: boolean;
+    isAllowedVersion: boolean;
     password: string;
     scramblingProgressCurrent: Record<string, number>;
     scramblingProgressTarget: Record<string, number>;
@@ -12,8 +14,9 @@ interface ScramblingState {
 const initialState: ScramblingState = {
     fileZip: undefined,
     generatingScrambles: false,
+    isValidSignedBuild: false,
+    isAllowedVersion: false,
     password: "",
-    officialZipStatus: true,
     scramblingProgressCurrent: {},
     scramblingProgressTarget: {},
 };
@@ -24,17 +27,18 @@ export const scramblingSlice = createSlice({
     reducers: {
         setFileZip: (
             state,
-            action: PayloadAction<
-                { contentType: string; payload: string } | undefined
-            >
+            action: PayloadAction<WebsocketBlobResult | undefined>
         ) => {
             state.fileZip = action.payload;
         },
         setGeneratingScrambles: (state, action: PayloadAction<boolean>) => {
             state.generatingScrambles = action.payload;
         },
-        setOfficialZipStatus: (state, action: PayloadAction<boolean>) => {
-            state.officialZipStatus = action.payload;
+        setValidSignedBuild: (state, action: PayloadAction<boolean>) => {
+            state.isValidSignedBuild = action.payload;
+        },
+        setAllowedVersion: (state, action: PayloadAction<boolean>) => {
+            state.isAllowedVersion = action.payload;
         },
         setPassword: (state, action: PayloadAction<string>) => {
             state.password = action.payload;
@@ -60,7 +64,8 @@ export const scramblingSlice = createSlice({
 
 export const {
     setFileZip,
-    setOfficialZipStatus,
+    setValidSignedBuild,
+    setAllowedVersion,
     setPassword,
     setGeneratingScrambles,
     resetScramblingProgressCurrent,

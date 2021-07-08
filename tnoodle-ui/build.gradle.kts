@@ -22,7 +22,7 @@ val yarnInstall = tasks.named("yarn_install") {
 val yarnBuild = tasks.named("yarn_build") {
     dependsOn(yarnInstall)
 
-    inputs.files(fileTree("src").exclude("*.css"))
+    inputs.files(fileTree("src/main").exclude("*.css"))
     inputs.dir("public")
     inputs.file("package.json")
 

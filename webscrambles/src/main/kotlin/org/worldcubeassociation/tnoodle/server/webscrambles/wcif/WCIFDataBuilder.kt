@@ -20,6 +20,7 @@ object WCIFDataBuilder {
     const val WATERMARK_STAGING = "STAGING"
     const val WATERMARK_OUTDATED = "OUTDATED"
     const val WATERMARK_UNOFFICIAL = "UNOFFICIAL"
+    const val WATERMARK_MANUAL = "MANUAL"
 
     fun Competition.toScrambleSetData(): CompetitionDrawingData {
         val frontendStatus = findExtension<TNoodleStatusExtension>()
@@ -86,12 +87,14 @@ object WCIFDataBuilder {
     }
 
     fun TNoodleStatusExtension.pickWatermarkPhrase(): String? {
-        return if (!isOfficialBuild) {
-            WATERMARK_UNOFFICIAL
-        } else if (!isRecentVersion) {
-            WATERMARK_OUTDATED
-        } else if (isStaging) {
+        return if (isStaging) {
             WATERMARK_STAGING
+        } else if (!isSignedBuild) {
+            WATERMARK_UNOFFICIAL
+        } else if (!isAllowedVersion) {
+            WATERMARK_OUTDATED
+        } else if (isManual) {
+            WATERMARK_MANUAL
         } else null
     }
 

@@ -3,7 +3,10 @@ import { useDispatch } from "react-redux";
 import tnoodleApi from "../api/tnoodle.api";
 import wcaApi from "../api/wca.api";
 import CurrentTnoodle from "../model/CurrentTnoodle";
-import { setOfficialZipStatus } from "../redux/slice/ScramblingSlice";
+import {
+    setAllowedVersion,
+    setValidSignedBuild,
+} from "../redux/slice/ScramblingSlice";
 
 const VersionInfo = () => {
     const [currentTnoodle, setCurrentTnoodle] = useState<CurrentTnoodle>();
@@ -46,20 +49,18 @@ const VersionInfo = () => {
     }, [dispatch]);
 
     // This avoids global state update while rendering
-    const analyzeVerion = () => {
+    const analyzeVersion = () => {
         // We wait until both wca and tnoodle answers
         if (!allowedTnoodleVersions || !runningVersion) {
             return;
         }
 
         dispatch(
-            setOfficialZipStatus(
-                signatureValid &&
-                    allowedTnoodleVersions.includes(runningVersion)
-            )
+            setAllowedVersion(allowedTnoodleVersions.includes(runningVersion))
         );
+        dispatch(setValidSignedBuild(signatureValid));
     };
-    useEffect(analyzeVerion, [
+    useEffect(analyzeVersion, [
         allowedTnoodleVersions,
         dispatch,
         runningVersion,

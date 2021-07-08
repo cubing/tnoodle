@@ -107,7 +107,7 @@ data class SheetCopyCountExtension(val numCopies: Int) : ExtensionBuilder() {
 
 @Serializable
 @SerialName(TNoodleStatusExtension.ID)
-data class TNoodleStatusExtension(val isStaging: Boolean, val isManual: Boolean, val isOfficialBuild: Boolean, val isRecentVersion: Boolean) : ExtensionBuilder() {
+data class TNoodleStatusExtension(val isStaging: Boolean, val isManual: Boolean, val isSignedBuild: Boolean, val isAllowedVersion: Boolean) : ExtensionBuilder() {
     override val id get() = ID
     override val specUrl get() = SPEC_URL
 

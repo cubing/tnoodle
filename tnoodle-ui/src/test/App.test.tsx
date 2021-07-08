@@ -1,4 +1,3 @@
-import { configureStore } from "@reduxjs/toolkit";
 import { fireEvent } from "@testing-library/react";
 import { shuffle } from "lodash";
 import React from "react";
@@ -10,15 +9,10 @@ import tnoodleApi from "../main/api/tnoodle.api";
 import wcaApi from "../main/api/wca.api";
 import Translation from "../main/model/Translation";
 import Wcif from "../main/model/Wcif";
-import { competitionSlice } from "../main/redux/slice/CompetitionSlice";
-import { fmcSlice } from "../main/redux/slice/FmcSlice";
-import { informationSlice } from "../main/redux/slice/InformationSlice";
-import { mbldSlice } from "../main/redux/slice/MbldSlice";
-import { scramblingSlice } from "../main/redux/slice/ScramblingSlice";
-import { wcifSlice } from "../main/redux/slice/WcifSlice";
 import { defaultWcif } from "../main/util/wcif.util";
 import {
     bestMbldAttempt,
+    defaultStatus,
     events,
     formats,
     languages,
@@ -32,12 +26,14 @@ import {
     scrambleProgram,
     wcifs,
 } from "./mock/wca.api.test.mock";
+import FrontendStatus from "../main/model/FrontendStatus";
 
 let container = document.createElement("div");
 
 let wcif: Wcif | null = null;
 let mbld: string | null = null;
 let password: string | null = null;
+let status: FrontendStatus | null = null;
 let translations: Translation[] | undefined;
 beforeEach(() => {
     // setup a DOM element as a render target
@@ -68,13 +64,14 @@ beforeEach(() => {
     );
 
     jest.spyOn(tnoodleApi, "fetchZip").mockImplementation(
-        (scrambleClient, _wcif, _mbld, _password, _translations) => {
+        (scrambleClient, _wcif, _mbld, _password, _status, _translations) => {
             wcif = _wcif;
             mbld = _mbld;
             password = _password;
+            status = _status;
             translations = _translations;
 
-            return Promise.resolve({ ...axiosResponse, data: plainZip });
+            return Promise.resolve(plainZip);
         }
     );
 
@@ -147,6 +144,7 @@ it("Just generate scrambles", async () => {
     expect(wcif!.events.length).toBe(1);
 
     expect(password).toBe("");
+    expect(status).toEqual(defaultStatus);
 });
 
 it("Changes on 333, scramble", async () => {
